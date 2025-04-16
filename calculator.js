@@ -7,7 +7,7 @@ const rl = readline.createInterface({
 function safeEval(expr) {
     // Only allow numbers, +, -, *, /, %, parentheses, decimal points, and spaces.
     expr = expr.replace(/\^/g, '**')
-    if (/^[\d+\-*/%.() ]+$/.test(expr) &&
+    if (/^[\d+\-*/4%.() ]+$/.test(expr) &&
         !/([+\-/%^]{2,})/.test(expr) &&      // No consecutive operators
         !/^[+\-*/%^]/.test(expr) &&          // No operator at the start
         !/[+\-*/%^]$/.test(expr)) {
@@ -31,7 +31,7 @@ async function math() {
                 if (isNaN(result)) {
                     console.log('incorrect form, please only enter correct math expressions')
                 } else {
-                    if (result == 'infinity') {
+                    if (result == 'Infinity') {
                         console.log('cannot divide by zero')
                     } else {
                         console.log('result: ' + result)
