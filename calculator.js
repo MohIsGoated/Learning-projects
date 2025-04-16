@@ -8,7 +8,7 @@ function safeEval(expr) {
     // Only allow numbers, +, -, *, /, %, parentheses, decimal points, and spaces
     expr = expr.replace(/\^/g, '**')
     if (/^[\d+\-*/%.() ]+$/.test(expr) &&
-        !/([+\-*/%^]{2,})/.test(expr) &&      // No consecutive operators
+        !/([+\-/%^]{2,})/.test(expr) &&      // No consecutive operators
         !/^[+\-*/%^]/.test(expr) &&          // No operator at the start
         !/[+\-*/%^]$/.test(expr)) {
         try {
