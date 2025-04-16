@@ -5,7 +5,7 @@ const rl = readline.createInterface({
     output: process.stdout
 })
 function safeEval(expr) {
-    // Only allow numbers, +, -, *, /, %, parentheses, decimal points, and spaces
+    // Only allow numbers, +, -, *, /, %, parentheses, decimal points, and spaces.
     expr = expr.replace(/\^/g, '**')
     if (/^[\d+\-*/%.() ]+$/.test(expr) &&
         !/([+\-/%^]{2,})/.test(expr) &&      // No consecutive operators
