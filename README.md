@@ -1,0 +1,1 @@
+A collection of shitty apps I am making to try and learn node js, it is going slow but somewhat steady, I am learning concepts, getting somewhat better at problem solving, aka just knowing what to google to get the anwwer 🙏
