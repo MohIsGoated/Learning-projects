@@ -22,7 +22,7 @@ function safeEval(expr) {
 }
 async function math() {
     while (true) {
-        const x = await new Promise((resolve)=> {
+        const x = await new Promise(resolve=> {
             rl.question('enter your equation\n', resolve)
         });
                 readline.cursorTo(process.stdout, 0, 0);
