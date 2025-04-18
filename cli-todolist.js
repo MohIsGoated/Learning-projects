@@ -4,7 +4,7 @@ const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
 });
-
+// create the tasks file if it doesnt exist
 if (!fs.existsSync("tasks.json")) {
     fs.writeFileSync('tasks.json', '[]');
 }
@@ -15,10 +15,11 @@ async function tdl() {
         const a = await new Promise(resolve => {
             rl.question('', resolve);
         });
+        // handle uppercases
         const x = a.toLocaleLowerCase()
         let todos = JSON.parse(fs.readFileSync('./tasks.json', "utf-8"));
         if (x === 'list') {
-        todos.forEach((task, index) => {
+        todos.forEach((task) => {
             const status = task.done ? '✅' : '❌'
             console.log(`[${task.id}] ${task.title} - ${task.description} (${status})`)
         })
