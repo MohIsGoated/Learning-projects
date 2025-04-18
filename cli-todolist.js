@@ -4,7 +4,7 @@ const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
 });
-// create the tasks file if it doesnt exist
+// create the tasks file if it doesn't exist
 if (!fs.existsSync("tasks.json")) {
     fs.writeFileSync('tasks.json', '[]');
 }
