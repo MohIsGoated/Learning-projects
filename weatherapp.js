@@ -15,14 +15,14 @@ async function goat(){
         })
         rl.close()
         if (input === '?') {
-            console.log('This is a cli weather app that uses https://www.weatherapi.com/\nto use it, enter a city name, Decimal degree, US, UK, or a canada zip code\nyou may also look up an ip by typing `auto:(ip here)`\ncurrent commands:\nclear: clears the entire output\n?: shows this screen,\nexit: exits the app')
+            console.log(chalk.cyan('This is a cli weather app that uses https://www.weatherapi.com/\nto use it, enter a city name, Decimal degree, US, UK, or a canada zip code\nyou may also look up an ip by typing `auto:(ip here)`\ncurrent commands:\nclear: clears the entire output\n?: shows this screen,\nexit: exits the app'))
         } else {
             if (input === 'clear') {
                 readline.cursorTo(process.stdout, 0, 0)
                 readline.clearScreenDown(process.stdout)
             } else {
                 if (input === 'exit') {
-                    console.log('truly, thank you for using my cli app, all love <3')
+                    console.log(chalk.red('truly, thank you for using my cli app, all love ❤️'))
                     rl.close()
                     break
                 } else {
@@ -35,14 +35,14 @@ async function goat(){
                             'q': input,
                         }
                     }).catch(function (error) {
-                        console.error(error.response.data.error.message)
+                        console.error(chalk.bgRedBright(error.response.data.error.message))
                     })
                     if (weather) {
                         const data = weather.data
-                        console.log(chalk.blue(`showing weather for city ${input} located in ${data.location.country}`))
+                        console.log(chalk.blue(`showing weather for city ${data.location.name} located in ${data.location.country}`))
                         console.log(chalk.green(`it is currently ${data.current.temp_c}C`))
                         console.log(chalk.cyan(`currently, ${data.current.condition.text} weather can be seen`))
-                        console.log(chalk.blueBright(`the wind speed is ${data.current.wind_kph}km/h, with a degree of ${data.current.degree}`))
+                        console.log(chalk.blueBright(`the wind speed is ${data.current.wind_kph}km/h, with a degree of ${data.current.wind_degree}°`))
                     }
                 }
             }
@@ -50,8 +50,8 @@ async function goat(){
     }
 }
 if (process.env.WEATHER_API_KEY) {
-    console.log('welcome to my cli weather app! use ? for help.')
+    console.log(chalk.green('welcome to my cli weather app! use ? for help.'))
     goat()
 } else {
-    console.warn('please set your api key value in the .env file')
+    console.warn(chalk.redBright('please set your api key value in the .env file'))
 }
