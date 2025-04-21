@@ -16,7 +16,7 @@ async function tdl() {
             rl.question('', resolve);
         });
         // handle uppercases
-        const x = a.toLocaleLowerCase()
+        const x = (a.toLocaleLowerCase()).replace(' ', '')
         let todos = JSON.parse(fs.readFileSync('./tasks.json', "utf-8"));
         if (x === 'list') {
         todos.forEach((task) => {
