@@ -1,15 +1,16 @@
 {
-  "name": "learning",
+  "name": "Learning",
   "version": "1.0.0",
   "description": "",
-  "main": "weatherapp.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "private": true,
   "dependencies": {
+    "chalk": "^5.4.1",
     "axios": "^1.8.4",
-    "chalk": "^4.1.2",
+    "discord.js": "^14.18.0",
     "dotenv": "^16.5.0"
   }
 }
