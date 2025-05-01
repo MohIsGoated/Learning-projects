@@ -39,7 +39,6 @@ client.on(Events.InteractionCreate, async interaction => {
             console.log(chalk.bgRedBright(`No interaction ${interaction.commandName} found`));
             return;
         }
-
         try {
             await command.execute(interaction);
         } catch (err) {
