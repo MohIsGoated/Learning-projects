@@ -14,7 +14,6 @@ data: new SlashCommandBuilder()
         const Humans = membercount.filter(u => !u.user.bot).size;
         const Bots = membercount.filter(u => u.user.bot).size;
         const roles = interaction.guild.roles.cache.filter(r => r.id !== interaction.guild.id)
-        console.log(interaction.guild.description)
         const embed = new EmbedBuilder()
             .setColor(resolveColor("Blue"))
             .setTitle(`Server Information of [ ${SerName} ]`)
