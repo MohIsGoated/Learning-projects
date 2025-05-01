@@ -209,3 +209,7 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
+/.infisical.json
+/package-lock.json
+/tasks.json
+/.idea/
