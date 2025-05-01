@@ -43,7 +43,7 @@ client.on(Events.InteractionCreate, async interaction => {
         try {
             await command.execute(interaction);
         } catch (err) {
-            console.log(chalk.bgRedBright(err));
+            console.log(chalk.bgRedBright(err.stack));
             if (interaction.replied || interaction.deferred) {
                 await interaction.followUp({
                     content: 'There has been an error while executing your command.',
