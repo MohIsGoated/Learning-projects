@@ -1,4 +1,9 @@
 const { SlashCommandBuilder, AttachmentBuilder, Client, GatewayIntentBits, EmbedBuilder, resolveColor} = require('discord.js');
+const config = require('../../config.json')
+config.footer = config.footer || 'Made with luv ❤️';
+config.footerUrl = config.footerUrl || 'https://cdn.discordapp.com/avatars/1086622488374550649/8901d89d61aad251caf017646932a7d3.webp?size=1024'
+
+
 module.exports = {
 data: new SlashCommandBuilder()
     .setName('server')
@@ -18,7 +23,11 @@ data: new SlashCommandBuilder()
             .setColor(resolveColor("Blue"))
             .setTitle(`Server Information of [ ${SerName} ]`)
             .setThumbnail(SerIcon)
-            .setFooter({ text: "Goat Prod" })
+            .setFooter({
+                text: config.footer,
+                iconURL: config.footerUrl
+                })
+            .setTimestamp(new Date())
         const fields = [
                 { name: 'Owner:', value: owner},
                 { name: `Channels: ${TotalChannels}`, value: `Text Channels: ${TChanCount}\nVoice Channels: ${VChanCount}`},
