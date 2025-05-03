@@ -72,14 +72,14 @@ module.exports = {
             embed
                 .setColor(resolveColor("Green"))
                 .setDescription(`Banned user <@${user.id}> (${user.id})`)
-            interaction.guild.members.ban(user.id, {deleteMessageSeconds: duration , reason: `reason: ${reason}, by <@${interaction.user.id}>`})
+            interaction.guild.members.ban(user.id, {deleteMessageSeconds: duration , reason: `${reason} - by <@${interaction.user.id}>`})
             await interaction.reply({embeds: [embed]})
         } else {
            embed
                 .setColor(resolveColor("Green"))
                 .setTitle('SUCCESS')
                 .setDescription(`Banned user <@${user.id}> (${user.id})`)
-            interaction.guild.members.ban(user.id, {deleteMessageSeconds: duration , reason: `reason: ${reason}, by <@${interaction.user.id}>`})
+            interaction.guild.members.ban(user.id, {deleteMessageSeconds: duration , reason: `${reason} - by <@${interaction.user.id}>`})
             await interaction.reply({embeds: [embed]})
         }
     }
