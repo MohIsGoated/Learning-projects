@@ -25,7 +25,7 @@ module.exports = {
         const user = interaction.options.getUser('user')
         const member = interaction.options.getMember('user')
         const reason = interaction.options.getString('reason') ?? 'No reason given'
-        const duration = interaction.options.getNumber('duration')*60*60 ?? 0
+        const duration = interaction.options.getNumber('duration') * 60 * 60 ?? 0
         const banned = await IsBanned(interaction, user.id)
         const embed = new EmbedBuilder()
             .setFooter({
