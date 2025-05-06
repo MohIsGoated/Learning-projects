@@ -9,10 +9,10 @@ module.exports = {
         .setName('balance')
         .setDescription('Get your balance'),
     async execute(interaction) {
-        const price = await queryone(db, "SELECT balance FROM users WHERE user_id=?", [`${interaction.user.id}`])
-        if (!price) {
+        const userData = await queryone(db, "SELECT balance FROM users WHERE user_id=?", [`${interaction.user.id}`])
+        if (!userData) {
             return await interaction.reply(`You are not registered, use /register to register`)
         }
-        await interaction.reply(`ur balance is ${price["price"]}`)
+        await interaction.reply(`ur balance is ${userData["balance"]}`)
     }
 }
