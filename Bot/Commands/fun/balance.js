@@ -13,6 +13,6 @@ module.exports = {
         if (!userData) {
             return await interaction.reply(`You are not registered, use /register to register`)
         }
-        await interaction.reply(`ur balance is ${userData["balance"]}`)
+        await interaction.reply(`ur balance is ${Number(userData["balance"])}`)
     }
 }
