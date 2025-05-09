@@ -20,7 +20,7 @@ module.exports = {
                 flags: 64
             })
         }
-        const amount = Number(input)
+        const amount = Math.round(Number(input))
         if (amount < 0) {
             return await interaction.reply(`The devil doesn't deal with such amounts.. Not in this world at least.`)
         }
