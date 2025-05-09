@@ -47,12 +47,12 @@ client.on(Events.InteractionCreate, async interaction => {
             if (interaction.replied || interaction.deferred) {
                 await interaction.followUp({
                     content: 'There has been an error while executing your command.',
-                    flags: 64 // Correct flag for ephemeral messages
+                    flags: 64
                 });
             } else {
                 await interaction.reply({
                     content: 'There has been an error while executing your command.',
-                    flags: 64 // Correct flag for ephemeral messages
+                    flags: 64
                 });
             }
         }
