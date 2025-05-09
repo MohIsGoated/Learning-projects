@@ -17,7 +17,7 @@ module.exports = {
         if (isNaN(input)) {
             return await interaction.reply({
                 content: 'Please enter a valid number.',
-                ephemeral: true
+                flags: 64
             })
         }
         const amount = Number(input)

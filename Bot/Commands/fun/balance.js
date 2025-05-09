@@ -11,7 +11,10 @@ module.exports = {
     async execute(interaction) {
         const userData = await queryone(db, "SELECT balance FROM users WHERE user_id=?", [`${interaction.user.id}`])
         if (!userData) {
-            return await interaction.reply(`You are not registered, use /register to register`)
+            return await interaction.reply({
+                content: `You are not registered, use /register to register`,
+                flags: 64
+            })
         }
         await interaction.reply(`ur balance is ${Number(userData["balance"])}`)
     }

@@ -30,7 +30,7 @@ module.exports = {
         if (isNaN(amount)) {
             return await interaction.reply({
                 content: 'Please enter a valid number',
-                ephemeral: true
+                flags: 64
             })
         }
         if (amount < 0) {
