@@ -33,7 +33,7 @@ module.exports = {
         const win = Math.random() < 1/3
         let Nbalance;
         if (win) {
-            Nbalance = balance + amount
+            Nbalance = balance + (amount * 2)
             await execute(db, "UPDATE users SET balance=? WHERE user_id=?", [Nbalance, interaction.user.id])
             return await interaction.reply(`You won ${amount * 2}$! Your new balance is ${Nbalance}$.`)
         } else {
