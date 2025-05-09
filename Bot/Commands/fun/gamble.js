@@ -25,22 +25,20 @@ module.exports = {
             return await interaction.reply(`The devil doesn't deal with such amounts.. Not in this world at least.`)
         }
         const userData = await queryone(db, "SELECT * FROM users WHERE user_id=?", [`${interaction.user.id}`])
-        const balance = Number(userData["balance"])
-        console.log(balance)
-        console.log()
+        let balance = Number(userData["balance"])
         if (balance < amount) {
-            return await interaction.reply(`You can not offer what you cannot afford.`)
+            return await interaction.reply(`Do not offer what you cannot afford.`)
         }
-        const LuckyNumber = Math.floor(Math.random() * 3 + 1)
-        console.log(LuckyNumber)
-        await execute(db, "UPDATE users SET balance=? WHERE user_id=?", [balance-amount, interaction.user.id])
-        if (LuckyNumber === 1) {
-            const win = Number(amount * 2)
-            const Nbalance = Number(balance + win)
+        balance = balance - amount
+        const win = Math.random() < 1/3
+        let Nbalance;
+        if (win) {
+            Nbalance = balance + amount
             await execute(db, "UPDATE users SET balance=? WHERE user_id=?", [Nbalance, interaction.user.id])
-            return await interaction.reply(`You won ${win}$! Your new balance is ${Nbalance}$.`)
+            return await interaction.reply(`You won ${amount * 2}$! Your new balance is ${Nbalance}$.`)
         } else {
-            const Nbalance = Number(balance - amount)
+            const Nbalance = Number(balance)
+            await execute(db, "UPDATE users SET balance=? WHERE user_id=?", [Nbalance, interaction.user.id])
             await interaction.reply(`You've sadly lost.. Your new balance is ${Nbalance}`)
         }
     }
