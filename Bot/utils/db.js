@@ -26,18 +26,28 @@ const db = new sqlite3.Database(dbpath)
         }
         async function queryone(db, sql, params = []) {
                 return new Promise((resolve, reject) => {
-                        db.get(sql, params, (err, rows) => {
-                                if (err) reject(err)
-                                resolve(rows)
-                        })
-                })
-        }
-        async function queryall(db, sql, params = []) {
-                return new Promise((resolve, reject) => {
-                        db.all(sql, params, (err, row) => {
+                        db.get(sql, params, (err, row) => {
                                 if (err) reject(err)
                                 resolve(row)
                         })
                 })
         }
-module.exports = { execute, queryall , queryone , db }
+        async function queryall(db, sql, params = []) {
+                return new Promise((resolve, reject) => {
+                        db.all(sql, params, (err, rows) => {
+                                if (err) reject(err)
+                                resolve(rows)
+                        })
+                })
+        }
+        async function initDb() {
+        await execute(db, `CREATE TABLE IF NOT EXISTS users (
+        user_id TEXT PRIMARY KEY,
+        balance TEXT NOT NULL)
+                `);
+        }
+        async function exists(db, id) {
+                const exists = await queryone(db, "SELECT * FROM users WHERE user_id=?", [id])
+                return !!exists;
+        }
+module.exports = { execute, queryall , queryone , initDb , exists , db }

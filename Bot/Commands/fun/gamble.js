@@ -1,5 +1,5 @@
 const { EmbedBuilder, SlashCommandBuilder, resolveColor} = require('discord.js')
-const { execute, queryone, queryall, db} = require('../../utils/db')
+const { execute, queryone, queryall, db, exists} = require('../../utils/db')
 const config = require('../../config.json')
 config.footer = config.footer || 'Made with luv ❤️';
 config.footerUrl = config.footerUrl || 'https://cdn.discordapp.com/avatars/1086622488374550649/8901d89d61aad251caf017646932a7d3.webp?size=1024'
@@ -14,6 +14,13 @@ module.exports = {
         ),
     cooldown: 3,
     async execute(interaction) {
+        const exist = await exists(db, interaction.user.id)
+        if (!exist) {
+            return await interaction.reply({
+                content: `You are not registered, register with /register.`,
+                ephemeral: true
+            })
+        }
         const input = interaction.options.getString('amount')
         if (isNaN(input)) {
             return await interaction.reply({
