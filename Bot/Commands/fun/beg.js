@@ -20,7 +20,7 @@ module.exports = {
         const user = await queryone(db, "SELECT * FROM users WHERE user_id=?", [interaction.user.id])
         const balance = Number(user["balance"])
         if (balance > 50000) {
-            const chance = Math.random() < 1 / 10;
+            const chance = Math.random() < 1 / 5;
             if (chance) {
                 const amount = Math.round(Math.random() * 5000)
                 await interaction.reply({
