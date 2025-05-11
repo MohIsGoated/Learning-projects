@@ -9,15 +9,16 @@ module.exports = {
         .setDescription('Take a chance with the devil!')
         .addStringOption(option => option
             .setName('amount')
-            .setDescription('How much can you afford to loose?')
+            .setDescription('How much can you afford to lose?')
             .setRequired(true)
         ),
+    cooldown: 3,
     async execute(interaction) {
         const input = interaction.options.getString('amount')
         if (isNaN(input)) {
             return await interaction.reply({
                 content: 'Please enter a valid number.',
-                flags: 64
+                ephemeral: true
             })
         }
         const amount = Math.round(Number(input))
@@ -37,7 +38,7 @@ module.exports = {
             await execute(db, "UPDATE users SET balance=? WHERE user_id=?", [Nbalance, interaction.user.id])
             return await interaction.reply(`You won ${amount * 2}$! Your new balance is ${Nbalance}$.`)
         } else {
-            const Nbalance = Number(balance)
+            const Nbalance = balance
             await execute(db, "UPDATE users SET balance=? WHERE user_id=?", [Nbalance, interaction.user.id])
             await interaction.reply(`You've sadly lost.. Your new balance is ${Nbalance}`)
         }
