@@ -10,7 +10,7 @@ const client = new Client({ intents: [
 ]
 });
 const chalk = require("chalk");
-
+const cooldowns = new Map();
 client.commands = new Collection();
 const folderpath = path.join(__dirname, 'Commands');
 const CommandsFolder = fs.readdirSync(folderpath);
@@ -35,11 +35,30 @@ client.once(Events.ClientReady, readyClient => {
 
 client.on(Events.InteractionCreate, async interaction => {
     if (interaction.isChatInputCommand()) {
-        const command = interaction.client.commands.get(interaction.commandName);
+        const command = client.commands.get(interaction.commandName);
         if (!command) {
             console.log(chalk.bgRedBright(`No interaction ${interaction.commandName} found`));
             return;
         }
+        const now = Date.now();
+        const userId = interaction.user.id;
+        const cooldownAmount = (command.cooldown || 0) * 1000
+        if (!cooldowns.has(command.data.name)) {
+            cooldowns.set(command.data.name, new Map());
+        }
+        const timestamps = cooldowns.get(command.data.name);
+        if (timestamps.has(userId)) {
+            const expire = timestamps.get(userId);
+            const timeleft = expire - now
+            if (timeleft > 0) {
+                return await interaction.reply({
+                    content: `⏳ You're on cooldown, Try again in **${Math.ceil(timeleft / 1000)}s**.`,
+                    ephemeral: true
+                });
+            }
+        }
+        timestamps.set(userId, now + cooldownAmount)
+        setTimeout(() => {timestamps.delete(userId)}, cooldownAmount)
         try {
             await command.execute(interaction);
         } catch (err) {
@@ -47,12 +66,12 @@ client.on(Events.InteractionCreate, async interaction => {
             if (interaction.replied || interaction.deferred) {
                 await interaction.followUp({
                     content: 'There has been an error while executing your command.',
-                    flags: 64
+                    ephemeral: true
                 });
             } else {
                 await interaction.reply({
                     content: 'There has been an error while executing your command.',
-                    flags: 64
+                    ephemeral: true
                 });
             }
         }
