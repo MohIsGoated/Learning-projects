@@ -20,7 +20,7 @@ function safeEval(expr) {
         return "Invalid expression";
     }
 }
-async function math() {
+async function calc() {
     while (true) {
         const x = await new Promise(resolve=> {
             rl.question('enter your equation\n', resolve)
@@ -39,4 +39,4 @@ async function math() {
                 }
     }
 }
-math();
+calc();
