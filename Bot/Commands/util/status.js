@@ -24,7 +24,7 @@ module.exports = {
                 {name: 'Invisible', value: 'invisible'}
             )
         ),
-    adminOnly: true,
+    ownerOnly: true,
     async execute(interaction) {
         const input = interaction.options.getString('text')
         const state = interaction.options.getString('state') ?? 'online'

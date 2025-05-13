@@ -18,17 +18,12 @@ module.exports = {
             .setName('user')
             .setDescription('Who to bless')
         ),
+    ownerOnly: true,
     async execute(interaction) {
         const exist = await exists(db, interaction.user.id)
         if (!exist) {
             return await interaction.reply({
                 content: `You are not registered, register with /register.`,
-                ephemeral: true
-            })
-        }
-        if (interaction.user.id !== config.ownerID) {
-            return await interaction.reply({
-                content: `Only the bot's owner can use this command`,
                 ephemeral: true
             })
         }

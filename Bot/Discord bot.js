@@ -60,6 +60,16 @@ client.on(Events.InteractionCreate, async interaction => {
         }
         timestamps.set(userId, now + cooldownAmount)
         setTimeout(() => {timestamps.delete(userId)}, cooldownAmount)
+        console.log(config?.ownerID)
+        if (command.ownerOnly && interaction.user.id !== config?.ownerID) {
+            if (!config.ownerID) {
+                console.warn(chalk.bgYellow.black('[WARN] config.ownerID is not defined! Owner-only commands will block all users.'));
+            }
+            return await interaction.reply({
+                content: `Only the owner of the bot may use this command!`,
+                ephemeral: true
+            });
+        }
         try {
             await command.execute(interaction);
         } catch (err) {
