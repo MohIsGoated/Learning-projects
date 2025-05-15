@@ -43,8 +43,12 @@ const db = new sqlite3.Database(dbpath)
         async function initDb() {
         await execute(db, `CREATE TABLE IF NOT EXISTS users (
         user_id TEXT PRIMARY KEY,
-        balance TEXT NOT NULL)
-                `);
+        balance INTEGER NOT NULL,
+        lastrobbed INTEGER,
+        highestbalance INTEGER,
+        lastmugged INTEGER
+        )
+        `);
         }
         async function exists(db, id) {
                 const exists = await queryone(db, "SELECT * FROM users WHERE user_id=?", [id])

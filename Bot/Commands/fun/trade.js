@@ -31,11 +31,9 @@ module.exports = {
         const amount = Math.round(Number(input))
         const userexists = await exists(db, interaction.user.id)
         const targetexists = await exists(db, target.id)
-        const {balance: sbalance} = await queryone(db, "SELECT balance FROM users WHERE user_id=?", [interaction.user.id])
-        const {balance: rbalance} = await queryone(db, "SELECT balance FROM users WHERE user_id=?", [target.id])
         if (!userexists) {
             return interaction.reply({
-                content: `You are not isnt registered, Register using /register`,
+                content: `You are not registered, Register using /register`,
                 ephemeral:true
             })
         }
@@ -51,6 +49,8 @@ module.exports = {
                 ephemeral:true
             })
         }
+        const {balance: sbalance} = await queryone(db, "SELECT balance FROM users WHERE user_id=?", [interaction.user.id])
+        const {balance: rbalance} = await queryone(db, "SELECT balance FROM users WHERE user_id=?", [target.id])
         if (amount < 0) {
             return interaction.reply({
                 content: `Are you trying to steal or something? Denied.`,
