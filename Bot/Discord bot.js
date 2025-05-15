@@ -45,25 +45,29 @@ client.on(Events.InteractionCreate, async interaction => {
             console.log(chalk.bgRedBright(`No interaction ${interaction.commandName} found`));
             return;
         }
-        const now = Date.now();
-        const userId = interaction.user.id;
-        const cooldownAmount = (command.cooldown || 0) * 1000
-        if (!cooldowns.has(command.data.name)) {
-            cooldowns.set(command.data.name, new Map());
-        }
-        const timestamps = cooldowns.get(command.data.name);
-        if (timestamps.has(userId)) {
-            const expire = timestamps.get(userId);
-            const timeleft = expire - now
-            if (timeleft > 0) {
-                return await interaction.reply({
-                    content: `⏳ You're on cooldown, Try again in **${Math.ceil(timeleft / 1000)}s**.`,
-                    ephemeral: true
-                });
+        if (interaction.user.id !== config?.ownerID) {
+            const now = Date.now();
+            const userId = interaction.user.id;
+            const cooldownAmount = (command.cooldown || 0) * 1000
+            if (!cooldowns.has(command.data.name)) {
+                cooldowns.set(command.data.name, new Map());
             }
+            const timestamps = cooldowns.get(command.data.name);
+            if (timestamps.has(userId)) {
+                const expire = timestamps.get(userId);
+                const timeleft = expire - now
+                if (timeleft > 0) {
+                    return await interaction.reply({
+                        content: `⏳ You're on cooldown, Try again in **${Math.ceil(timeleft / 1000)}s**.`,
+                        ephemeral: true
+                    });
+                }
+            }
+            timestamps.set(userId, now + cooldownAmount)
+            setTimeout(() => {
+                timestamps.delete(userId)
+            }, cooldownAmount)
         }
-        timestamps.set(userId, now + cooldownAmount)
-        setTimeout(() => {timestamps.delete(userId)}, cooldownAmount)
         if (command.ownerOnly && interaction.user.id !== config?.ownerID) {
             return await interaction.reply({
                 content: `Only the owner of the bot may use this command!`,
