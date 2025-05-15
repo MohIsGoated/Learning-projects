@@ -1,6 +1,7 @@
 const { ActivityType, EmbedBuilder, SlashCommandBuilder, resolveColor} = require('discord.js')
 const { execute, queryone, queryall, db, exists} = require('../../utils/db')
 const config = require('../../config.json')
+const {ChangeStatus} = require("../../utils/ChangeStatus");
 config.footer = config.footer || 'Made with luv ❤️';
 config.footerUrl = config.footerUrl || 'https://cdn.discordapp.com/avatars/1086622488374550649/8901d89d61aad251caf017646932a7d3.webp?size=1024'
 
@@ -27,13 +28,7 @@ module.exports = {
     ownerOnly: true,
     async execute(interaction) {
         const input = interaction.options.getString('text')
-        const state = interaction.options.getString('state') ?? 'online'
-        interaction.client.user.setPresence({
-            activities: [{
-                name: input,
-                type: ActivityType.Custom
-            }],
-            status: state
-        })
+        const state = interaction.options.getString('state')
+        await ChangeStatus(interaction.client, input, state)
     }
 }

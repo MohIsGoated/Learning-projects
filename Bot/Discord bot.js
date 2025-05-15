@@ -11,6 +11,7 @@ const client = new Client({ intents: [
 ]
 });
 const chalk = require("chalk");
+const { ChangeStatus } = require('./utils/ChangeStatus')
 const cooldowns = new Map();
 client.commands = new Collection();
 const folderpath = path.join(__dirname, 'Commands');
@@ -30,8 +31,11 @@ for (const folder of CommandsFolder) {
     }
 }
 
-client.once(Events.ClientReady, readyClient => {
-    console.log(`Logged in as ${readyClient.user.tag}`);
+client.once(Events.ClientReady, async () => {
+    console.log(`Logged in as ${client.user.tag}`);
+    if (config.status) {
+        await ChangeStatus(client, config.status)
+    }
 });
 
 client.on(Events.InteractionCreate, async interaction => {
@@ -60,7 +64,6 @@ client.on(Events.InteractionCreate, async interaction => {
         }
         timestamps.set(userId, now + cooldownAmount)
         setTimeout(() => {timestamps.delete(userId)}, cooldownAmount)
-        console.log(config?.ownerID)
         if (command.ownerOnly && interaction.user.id !== config?.ownerID) {
             return await interaction.reply({
                 content: `Only the owner of the bot may use this command!`,
