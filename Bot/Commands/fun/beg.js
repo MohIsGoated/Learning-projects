@@ -1,4 +1,4 @@
-const { EmbedBuilder, SlashCommandBuilder, resolveColor} = require('discord.js')
+const { EmbedBuilder, SlashCommandBuilder, resolveColor, MessageFlags} = require('discord.js')
 const { execute, queryone, queryall, db, exists} = require('../../utils/db')
 const config = require('../../config.json')
 config.footer = config.footer || 'Made with luv ❤️';
@@ -14,7 +14,7 @@ module.exports = {
         if (!exist) {
             return await interaction.reply({
                 content: `You are not registered, register with /register.`,
-                ephemeral: true
+                flags: MessageFlags.Ephemeral
             })
         }
         const user = await queryone(db, "SELECT * FROM users WHERE user_id=?", [interaction.user.id])

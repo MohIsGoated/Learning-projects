@@ -1,4 +1,4 @@
-const { EmbedBuilder, SlashCommandBuilder, resolveColor} = require('discord.js')
+const { EmbedBuilder, SlashCommandBuilder, resolveColor, MessageFlags} = require('discord.js')
 const { exists, execute, queryone, queryall, db} = require('../../utils/db')
 const config = require('../../config.json')
 config.footer = config.footer || 'Made with luv ❤️';
@@ -25,7 +25,7 @@ module.exports = {
         if (isNaN(input)) {
             return await interaction.reply({
                 content: 'Please enter a valid number.',
-                ephemeral: true
+                flags: MessageFlags.Ephemeral
             })
         }
         const amount = Math.round(Number(input))
@@ -34,19 +34,19 @@ module.exports = {
         if (!userexists) {
             return interaction.reply({
                 content: `You are not registered, Register using /register`,
-                ephemeral:true
+                flags: MessageFlags.Ephemeral
             })
         }
         if (interaction.user.id === target.id) {
             return interaction.reply({
                 content: `You can't trade your self silly!`,
-                ephemeral:true
+                flags: MessageFlags.Ephemeral
             })
         }
         if (!targetexists) {
             return interaction.reply({
                 content: `This user isnt registered, Tell them to register using /register`,
-                ephemeral:true
+                flags: MessageFlags.Ephemeral
             })
         }
         const {balance: sbalance} = await queryone(db, "SELECT balance FROM users WHERE user_id=?", [interaction.user.id])
@@ -54,13 +54,12 @@ module.exports = {
         if (amount < 0) {
             return interaction.reply({
                 content: `Are you trying to steal or something? Denied.`,
-                ephemeral:true
+                flags: MessageFlags.Ephemeral
             })
         }
         if (sbalance < amount) {
             return interaction.reply({
-                content: `You do not have that much to give.`,
-                ephemeral:true
+                flags: MessageFlags.Ephemeral
             })
         }
         const snbalance = sbalance - amount

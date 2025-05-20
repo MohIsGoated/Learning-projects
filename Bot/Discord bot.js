@@ -1,4 +1,4 @@
-const { Client, Events, GatewayIntentBits, Collection } = require('discord.js');
+const { Client, Events, GatewayIntentBits, Collection, MessageFlags } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
 require('dotenv').config({ path: '../.env' });
@@ -59,7 +59,7 @@ client.on(Events.InteractionCreate, async interaction => {
                 if (timeleft > 0) {
                     return await interaction.reply({
                         content: `⏳ You're on cooldown, Try again in **${Math.ceil(timeleft / 1000)}s**.`,
-                        ephemeral: true
+                        flags: MessageFlags.Ephemeral
                     });
                 }
             }
@@ -71,7 +71,7 @@ client.on(Events.InteractionCreate, async interaction => {
         if (command.ownerOnly && interaction.user.id !== config?.ownerID) {
             return await interaction.reply({
                 content: `Only the owner of the bot may use this command!`,
-                ephemeral: true
+                flags: MessageFlags.Ephemeral
             });
         }
         try {
@@ -81,12 +81,12 @@ client.on(Events.InteractionCreate, async interaction => {
             if (interaction.replied || interaction.deferred) {
                 await interaction.followUp({
                     content: 'There has been an error while executing your command.',
-                    ephemeral: true
+                    flags: MessageFlags.Ephemeral
                 });
             } else {
                 await interaction.reply({
                     content: 'There has been an error while executing your command.',
-                    ephemeral: true
+                    flags: MessageFlags.Ephemeral
                 });
             }
         }

@@ -1,4 +1,4 @@
-const { EmbedBuilder, SlashCommandBuilder, resolveColor} = require('discord.js')
+const { EmbedBuilder, SlashCommandBuilder, resolveColor, MessageFlags} = require('discord.js')
 const { execute, queryone, queryall, db, exists} = require('../../utils/db')
 const config = require('../../config.json')
 config.footer = config.footer || 'Made with luv ❤️';
@@ -24,7 +24,7 @@ module.exports = {
         if (!exist) {
             return await interaction.reply({
                 content: `You are not registered, register with /register.`,
-                ephemeral: true
+                flags: MessageFlags.Ephemeral
             })
         }
         const user = interaction.options.getUser('user') ?? interaction.user
@@ -32,7 +32,7 @@ module.exports = {
         if (isNaN(amount)) {
             return await interaction.reply({
                 content: 'Please enter a valid number',
-                ephemeral: true
+                flags: MessageFlags.Ephemeral
             })
         }
         if (amount < 0) {
