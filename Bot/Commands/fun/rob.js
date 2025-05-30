@@ -47,6 +47,18 @@ module.exports = {
         }
         const {balance: vbalance} = await queryone(db, "SELECT balance FROM users WHERE user_id=?", [target.id])
         const {balance: rbalance} = await queryone(db, "SELECT balance FROM users WHERE user_id=?", [interaction.user.id])
+        const {lastrobbing: lastrobbing} = await queryone(db, "SELECT lastrobbing FROM users WHERE user_id=?", [interaction.user.id])
+        const {lastmugged: lastmugged} = await queryone(db, "SELECT lastmugged FROM users WHERE user_id=?", [target.id])
+        if (Date.now() - lastrobbing < 60 * 15 * 1000) {
+            return interaction.reply({
+                embeds: [embed.setColor(resolveColor("Red")).setDescription(`You have robbed someone recently, might want to keep it on the low low`)]
+            })
+        }
+        if (Date.now() - lastmugged < 60 * 30 * 1000) {
+            return interaction.reply({
+                embeds: [embed.setColor(resolveColor("Red")).setDescription(`<@${target.id}> has been recently robbed, might be a good idea to leave them alone.. for now.`)]
+            })
+        }
         if (vbalance < 500 ) {
             return interaction.reply({
                 embeds: [embed.setColor(resolveColor("Red")).setDescription(brokeMessages[Math.floor(Math.random() * brokeMessages.length)])],
@@ -67,6 +79,8 @@ module.exports = {
             const earnings = Math.round((0.1 + Math.random() * 0.2) * vbalance)
             const nvbalance = vbalance - earnings
             const nrbalance = rbalance + earnings
+            await execute(db, "UPDATE users SET lastrobbing=? WHERE user_id=?", [Date.now(), interaction.user.id])
+            await execute(db, "UPDATE users SET lastmugged=? WHERE user_id=?", [Date.now(), target.id])
             await execute(db, "UPDATE users SET balance=? WHERE user_id=?", [nvbalance, target.id])
             await execute(db, "UPDATE users SET balance=? WHERE user_id=?", [nrbalance, interaction.user.id])
             await interaction.reply({
@@ -74,10 +88,12 @@ module.exports = {
             })
         } else {
             if (odd > 0.2) {
+                await execute(db, "UPDATE users SET lastrobbing=? WHERE user_id=?", [Date.now(), interaction.user.id])
                 await interaction.reply({
                     embeds: [embed.setColor(resolveColor("Yellow")).setDescription(`You were caught, but you managed to hit the dash and get away uncaught.`)]
                 })
             } else {
+                await execute(db, "UPDATE users SET lastrobbing=? WHERE user_id=?", [Date.now(), interaction.user.id])
                 const loss = Math.round((0.2 + Math.random() * 0.2) * rbalance)
                 const nvbalance = Math.round(vbalance + loss * 0.5)
                 const nrbalance = rbalance - loss

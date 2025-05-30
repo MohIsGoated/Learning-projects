@@ -12,7 +12,7 @@ module.exports = {
     async execute(interaction) {
         const exist = await exists(db, interaction.user.id)
         if (!exist) {
-            await queryone(db, "INSERT INTO users(user_id, balance) VALUES(?, ?)", [interaction.user.id, 3000])
+            await queryone(db, "INSERT INTO users(user_id, balance, lastmugged, lastrobbing) VALUES(?, ?, ?, ?)", [interaction.user.id, 3000, 0, 0])
             return await interaction.reply({
                 content: `You have successfully registered`,
                 flags: MessageFlags.Ephemeral

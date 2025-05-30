@@ -44,7 +44,7 @@ const db = new sqlite3.Database(dbpath)
         await execute(db, `CREATE TABLE IF NOT EXISTS users (
         user_id TEXT PRIMARY KEY,
         balance INTEGER NOT NULL,
-        lastrobbed INTEGER,
+        lastrobbing INTEGER,
         highestbalance INTEGER,
         lastmugged INTEGER
         )
