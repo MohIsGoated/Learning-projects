@@ -1,17 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder, resolveColor, MessageFlags} = require('discord.js');
 const config = require('../../config.json')
-/*
-what I learned from this:
-most things that I use to get a date, say when a user joined a server and such, are dates by default
-and contrary to my beliefs, these dats do not count as strings, and I need to convert them into strings
-a solution is to either use .getTime(), or do the simpler thing that I somehow missed
-which is using createdTimestamp, JoinedTimestamp and such (also since im using <t:UNIX>
-I need to divide by 1000 then math floor it (divide to get seconds, floor to get rid of .001 etc.)
-*/
-/*
-I also learned how to use ?, ??, and ||, it also taught me how to watch out for specific cases
-in this case, when the looked up is a bot, only adding things when the user is in the server
-*/
+
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('lookup')
