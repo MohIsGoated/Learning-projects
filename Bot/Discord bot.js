@@ -2,7 +2,6 @@ const { Client, Events, GatewayIntentBits, Collection, MessageFlags } = require(
 const fs = require('fs');
 const path = require('path');
 require('dotenv').config({ path: '../.env' });
-const config = require('./config.json')
 const { initDb } = require('./utils/db')
 const client = new Client({ intents: [
         GatewayIntentBits.Guilds,
@@ -12,11 +11,13 @@ const client = new Client({ intents: [
 });
 const chalk = require("chalk");
 const { ChangeStatus } = require('./utils/ChangeStatus')
+const { fixConfig } = require("./utils/fixconfig");
 const cooldowns = new Map();
 client.commands = new Collection();
 const folderpath = path.join(__dirname, 'Commands');
 const CommandsFolder = fs.readdirSync(folderpath);
-
+const fpath = path.join(__dirname, "/config.json")
+let config = JSON.parse(fs.readFileSync(fpath))
 for (const folder of CommandsFolder) {
     const CommandsPath = path.join(folderpath, folder);
     const CommandFiles = fs.readdirSync(CommandsPath).filter(file => file.endsWith(`.js`));
@@ -34,7 +35,7 @@ for (const folder of CommandsFolder) {
 client.once(Events.ClientReady, async () => {
     console.log(`Logged in as ${client.user.tag}`);
     if (config.status) {
-        await ChangeStatus(client, config.status)
+        await ChangeStatus(client, config.status, config.appearance)
     }
 });
 
@@ -92,6 +93,7 @@ client.on(Events.InteractionCreate, async interaction => {
         }
     }
 });
+fixConfig()
 initDb()
 if (!config.ownerID) {
     console.warn(chalk.bgYellow.black('[WARN] config.ownerID is not defined! Owner-only commands will block all users.'));

@@ -12,9 +12,6 @@ I need to divide by 1000 then math floor it (divide to get seconds, floor to get
 I also learned how to use ?, ??, and ||, it also taught me how to watch out for specific cases
 in this case, when the looked up is a bot, only adding things when the user is in the server
 */
-config.footer = config.footer || 'Made with luv ❤️';
-config.footerUrl = config.footerUrl || 'https://cdn.discordapp.com/avatars/1086622488374550649/8901d89d61aad251caf017646932a7d3.webp?size=1024'
-
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('lookup')
