@@ -24,47 +24,33 @@ module.exports = {
             })
             .setTimestamp(new Date())
         if (!interaction.member.permissions.has('KickMembers')) {
-            embed.setColor(resolveColor('Red'))
-                .setTitle('ERROR')
-                .setDescription('You do not have permissions to kick members')
-            return await interaction.reply({embeds: [embed]})
+            return await interaction.reply({embeds: [embed.setColor(resolveColor('Red')).setTitle('ERROR').setDescription('You do not have permissions to kick members')]})
         }
+
         if (!interaction.guild.members.me.permissions.has('KickMembers')) {
-            embed.setColor(resolveColor('Red'))
-                .setTitle('ERROR')
-                .setDescription('I do not have permissions to kick members')
-            return await interaction.reply({embeds: [embed]})
+            return await interaction.reply({embeds: [embed.setColor(resolveColor('Red')).setTitle('ERROR').setDescription('I do not have permissions to kick members')]})
         }
+
         if (member) {
             if (interaction.user.id === member.id) {
-                embed.setColor(resolveColor('Red'))
-                    .setTitle('ERROR')
-                    .setDescription('You cannot kick your self, silly!')
-                return await interaction.reply({embeds: [embed]})
+                return await interaction.reply({embeds: [embed.setColor(resolveColor('Red')).setTitle('ERROR').setDescription('You cannot kick your self, silly!')]})
             }
             if (interaction.guild.members.me.id === member.id) {
-                embed.setColor(resolveColor('Red'))
-                    .setTitle('ERROR')
-                    .setDescription('I refuse to kick my self, Deal with it.')
-                return await interaction.reply({embeds: [embed]})
+                return await interaction.reply({embeds: [embed.setColor(resolveColor('Red')).setTitle('ERROR').setDescription('I refuse to kick my self, Deal with it.')]})
             }
+
+            if (interaction.user.roles.highest.position <= member.roles.highest.position && interaction.user.user !== interaction.guild.ownerId) {
+                return await interaction.reply({embeds: [embed.setColor(resolveColor('Red')).setTitle('ERROR').setDescription('You do not have permissions to kick this specific member')]})
+            }
+
             if (!member.kickable) {
-                embed.setColor(resolveColor('Red'))
-                    .setTitle('ERROR')
-                    .setDescription('I do not have permissions to kick this member (Possibly higher role?)')
-                return await interaction.reply({embeds: [embed]})
+                return await interaction.reply({embeds: [embed.setColor(resolveColor('Red')).setTitle('ERROR').setDescription('I do not have permissions to kick this member (Possibly higher role?)')]})
             } else {
                 interaction.guild.members.kick(member.id, `${reason} - By ${interaction.member.id}`)
-                embed.setColor(resolveColor('Green'))
-                    .setTitle('SUCCESS')
-                    .setDescription(`Successfully kicked member <@${member.id}>`)
-                return await interaction.reply({embeds: [embed]})
+                return await interaction.reply({embeds: [embed.setColor(resolveColor('Green')).setTitle('SUCCESS').setDescription(`Successfully kicked member <@${member.id}>`)]})
             }
         } else {
-            embed.setColor(resolveColor('Red'))
-                .setTitle('ERROR')
-                .setDescription('This user is not in the guild')
-            return await interaction.reply({embeds: [embed]})
+            return await interaction.reply({embeds: [embed.setColor(resolveColor('Red')).setTitle('ERROR').setDescription('This user is not in the guild')]})
         }
     }
 }
