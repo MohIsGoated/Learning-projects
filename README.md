@@ -1,8 +1,20 @@
 # Random learning projects! 😊
 ## This project contains some apps I am making for the sake of learning
 
-# CLI Weather App 🌦️
-A simple Command Line Interface weather app made in node js and [Weather App](https://www.weatherapi.com/)
+# 🤖 Discord bot
+A simple multipurpose discord bot, with some fun commands, economy, and such
+## Setup
+1. download the project and open the .example-env file, then edit it with your token and client ID (found in discord.dev)
+2. rename the file you just edited to .env
+3. head to the Bot directory and edit the config.json file with what suits you
+4. now simply run it with
+```bash
+node "Discord Bot.js"
+```   
+
+
+# 🌦️ CLI Weather App
+A simple Command Line Interface weather app made in Node.js and [Weather App](https://www.weatherapi.com/)
 ## features
 - Live weather info by City, ZIP (US, UK, and Canada), coordinates, or an IP
 - A simple set of commands
@@ -11,8 +23,8 @@ A simple Command Line Interface weather app made in node js and [Weather App](ht
 ## Setup (how to use)
 1. Clone or download the zip
 2. run npm i / npm install
-3. edit the .example-env file with you key and rename it to .env
-4. Now run it using\
+3. edit the .example-env file with your key and rename it to .env
+4. To run it, use
 ```bash
 node weatherapp.js
 ```
