@@ -48,8 +48,12 @@ module.exports = {
             if (!member.kickable) {
                 return await interaction.reply({embeds: [embed.setColor(resolveColor('Red')).setTitle('ERROR').setDescription('I do not have permissions to kick this member (Possibly higher role?)')]})
             } else {
-                interaction.guild.members.kick(member.id, `${reason} - By ${interaction.member.id}`)
-                return await interaction.reply({embeds: [embed.setColor(resolveColor('Green')).setTitle('SUCCESS').setDescription(`Successfully kicked member <@${member.id}>`)]})
+                try {
+                    interaction.guild.members.kick(member.id, `${reason} - By ${interaction.member.id}`)
+                    return await interaction.reply({embeds: [embed.setColor(resolveColor('Green')).setTitle('SUCCESS').setDescription(`Successfully kicked member <@${member.id}>`)]})
+                } catch (e) {
+                    return await interaction.reply({embeds: [embed.setColor(resolveColor('Red')).setTitle('ERROR').setDescription(`An unexpected error occured, ${e.message}`)]})
+                }
             }
         } else {
             return await interaction.reply({embeds: [embed.setColor(resolveColor('Red')).setTitle('ERROR').setDescription('This user is not in the guild')]})
