@@ -20,6 +20,7 @@ module.exports = {
         .addStringOption(option => option
             .setName('reason')
             .setDescription('What to timeout this member for?')
+            .setMaxLength(480)
         ),
     async execute(interaction) {
         const embed = new EmbedBuilder()

@@ -14,6 +14,7 @@ module.exports = {
         .addStringOption(option => option
             .setName('reason')
             .setDescription('Reason for unban.')
+            .setMaxLength(480)
         ),
     async execute(interaction) {
         const user = interaction.options.getUser('user')

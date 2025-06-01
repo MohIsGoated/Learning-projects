@@ -14,10 +14,12 @@ module.exports = {
         .addStringOption(option => option
             .setName('reason')
             .setDescription('Reason to ban this member')
+            .setMaxLength(480)
         )
         .addNumberOption(option => option
             .setName('duration')
             .setDescription('Duration in hours for messages to delete')
+            .setMaxValue(168)
         ),
     async execute(interaction) {
         const user = interaction.options.getUser('user')

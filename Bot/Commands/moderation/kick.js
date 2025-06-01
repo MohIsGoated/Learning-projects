@@ -13,6 +13,7 @@ module.exports = {
         .addStringOption(option => option
             .setName('reason')
             .setDescription('Reason to kick this user')
+            .setMaxLength(480)
         ),
     async execute(interaction) {
         const member = interaction.options.getMember('user')
