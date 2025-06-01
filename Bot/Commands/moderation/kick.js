@@ -32,9 +32,11 @@ module.exports = {
         }
 
         if (member) {
+
             if (interaction.user.id === member.id) {
                 return await interaction.reply({embeds: [embed.setColor(resolveColor('Red')).setTitle('ERROR').setDescription('You cannot kick your self, silly!')]})
             }
+
             if (interaction.guild.members.me.id === member.id) {
                 return await interaction.reply({embeds: [embed.setColor(resolveColor('Red')).setTitle('ERROR').setDescription('I refuse to kick my self, Deal with it.')]})
             }
