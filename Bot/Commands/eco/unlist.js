@@ -28,11 +28,16 @@ module.exports = {
                 const channelid = lookup["channel_id"]
                 const messageid = lookup["message_id"]
                 const channel = interaction.client.channels.cache.get(channelid)
+                let msgdelete
                 if (!channel) {
                     embed.addFields({name: "Message deleted:", value: "❌ (channel doesn't exist)"})
                 } else {
                     if (channel.permissionsFor(interaction.client.user).has('MANAGE_MESSAGES')) {
-                        const msgdelete = await channel.messages.fetch(messageid)
+                        try {
+                            msgdelete = await channel.messages.fetch(messageid)
+                        } catch (e) {
+                            embed.addFields({name: "Message deleted:", value: "❌ (message doesn't exist)"})
+                        }
                         if (msgdelete) {
                             try {
                                 await msgdelete.delete()
@@ -40,8 +45,6 @@ module.exports = {
                             } catch (e) {
                                 embed.addFields({name: "Message deleted:", value: "❌ (contact the bot author)"})
                             }
-                        } else {
-                            embed.addFields({name: "Message deleted:", value: "❌ (message doesn't exist)"})
                         }
                     } else {
                         embed.addFields({name: "Message deleted:", value: "❌ (Bot does not have permissions)"})
