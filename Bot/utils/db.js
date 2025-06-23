@@ -51,11 +51,13 @@ const db = new sqlite3.Database(dbpath)
         `);
         await execute(db, `
         CREATE TABLE IF NOT EXISTS accounts (
-        acc_id INTEGER PRIMARY KEY,
+        acc_id TEXT PRIMARY KEY,
         acc_name TEXT NOT NULL,
         acc_details TEXT NOT NULL,
         acc_price INTEGER NOT NULL,
-        server_id TEXT NOT NULL
+        server_id TEXT NOT NULL,
+        channel_id TEXT NOT NULL,
+        message_id TEXT NOT NULL              
         )
         `);
         }
