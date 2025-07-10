@@ -21,6 +21,7 @@ module.exports = {
             .setDescription('Duration in hours for messages to delete')
             .setMaxValue(168)
         ),
+    ownerOnly: true,
     async execute(interaction) {
         const user = interaction.options.getUser('user')
         const member = interaction.options.getMember('user')

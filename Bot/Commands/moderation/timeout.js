@@ -22,6 +22,7 @@ module.exports = {
             .setDescription('What to timeout this member for?')
             .setMaxLength(480)
         ),
+    ownerOnly: true,
     async execute(interaction) {
         const embed = new EmbedBuilder()
             .setFooter({ text: config.footer, iconURL: config.footerUrl})

@@ -11,6 +11,7 @@ module.exports = {
             .setDescription("The channel to set it to")
             .setRequired(true)
         ),
+    ownerOnly: true,
 
     async execute(interaction) {
         const channel = interaction.options.getChannel("channel");

@@ -44,7 +44,9 @@ let ai_ids
 
 client.on("messageCreate", async (message) => {
     if (ai_ids.includes(message.channel.id)) {
-
+    if (message.member.user.bot) {
+        return
+    }
         if (message.mentions.has(client.user)) {
             await message.channel.sendTyping();
             const historydata = await message.channel.messages.fetch({

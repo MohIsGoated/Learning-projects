@@ -27,6 +27,7 @@ module.exports = {
             .setDescription("Extra information for the account")
             .setRequired(false)
         ),
+    ownerOnly: true,
     async execute(interaction) {
         let messageId
         const name = interaction.options.getString("name")

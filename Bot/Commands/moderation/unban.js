@@ -16,6 +16,7 @@ module.exports = {
             .setDescription('Reason for unban.')
             .setMaxLength(480)
         ),
+    ownerOnly: true,
     async execute(interaction) {
         const user = interaction.options.getUser('user')
         const reason = interaction.options.getString('reason') ?? "No reason provided."
@@ -39,7 +40,6 @@ module.exports = {
             })
         }
         if (!banned) {
-
             return await interaction.reply({
                 embeds: [embed.setTitle('ERROR').setDescription(`<@${user.id}> is not banned.`).setColor(resolveColor("Red"))],
                 flags: MessageFlags.Ephemeral

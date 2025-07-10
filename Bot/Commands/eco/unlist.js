@@ -12,6 +12,7 @@ module.exports = {
             .setDescription("The ID of the account to unlist")
             .setRequired(true)
         ),
+    ownerOnly: true,
     async execute(interaction) {
         const embed = new EmbedBuilder()
             .setFooter({ text: config.footer, iconURL: config.footerUrl })

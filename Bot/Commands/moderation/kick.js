@@ -15,6 +15,7 @@ module.exports = {
             .setDescription('Reason to kick this user')
             .setMaxLength(480)
         ),
+    ownerOnly: true,
     async execute(interaction) {
         const member = interaction.options.getMember('user')
         const reason = interaction.options.getString('reason') ?? 'No reason provided'
