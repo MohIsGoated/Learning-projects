@@ -40,6 +40,8 @@ client.once(Events.ClientReady, async () => {
     }
 });
 
+let ai_ids
+
 client.on("messageCreate", async (message) => {
     if (ai_ids.includes(message.channel.id)) {
 
@@ -91,9 +93,10 @@ client.on(Events.InteractionCreate, async interaction => {
             console.log(chalk.bgRedBright(`No interaction ${interaction.commandName} found`));
             return;
         }
-        if (command.name === "setaichannel") {
-            const channels = await getaichannels();
-            ai_ids = channels.map(item => item.ai_channel_id);
+        console.log(interaction.commandName)
+        if (interaction.commandName === "setaichannel") {
+                const channels = await getaichannels();
+                ai_ids = channels.map(item => item.ai_channel_id);
         }
         if (interaction.user.id !== config?.ownerID) {
             const now = Date.now();
@@ -143,7 +146,6 @@ client.on(Events.InteractionCreate, async interaction => {
     }
 });
 
-let ai_ids
 async function init() {
     const channels = await getaichannels()
     ai_ids = channels.map(item => item.ai_channel_id)
