@@ -63,7 +63,8 @@ client.on("messageCreate", async (message) => {
             if (message.reference) {
                 reference = await message.channel.messages.fetch(message.reference.messageId)
             }
-            const response = await getresponse(message.content, history, client.user.username, message.member, reference)
+            let response = await getresponse(message.content, history, client.user.username, message.member, reference)
+            response.text.replace("<@everyone>", 'REDACTED')
             if (response.text.length > 2000) {
                 const filePath = path.join(__dirname, 'message.txt');
                 fs.writeFileSync(filePath, response.text, 'utf8');
