@@ -2,16 +2,18 @@ const { Client, Events, GatewayIntentBits, Collection, MessageFlags } = require(
 const fs = require('fs');
 const path = require('path');
 require('dotenv').config({ path: '../.env' });
-const { initDb } = require('./utils/db')
+const { initDb, getaichannels} = require('./utils/db')
 const client = new Client({ intents: [
         GatewayIntentBits.Guilds,
         GatewayIntentBits.GuildMembers,
         GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent
 ]
 });
 const chalk = require("chalk");
 const { ChangeStatus } = require('./utils/ChangeStatus')
 const { fixConfig } = require("./utils/fixconfig");
+const {getresponse} = require("./utils/getresponse");
 const cooldowns = new Map();
 client.commands = new Collection();
 const folderpath = path.join(__dirname, 'Commands');
@@ -39,6 +41,50 @@ client.once(Events.ClientReady, async () => {
     }
 });
 
+client.on("messageCreate", async (message) => {
+    if (ai_ids.includes(message.channel.id)) {
+
+        if (message.mentions.has(client.user)) {
+            await message.channel.sendTyping();
+            const historydata = await message.channel.messages.fetch({
+                limit: 25,
+                before: message.id
+            })
+            const historyarray = historydata.map(item => ({
+                author: item.author.username,
+                content: item.content
+            }))
+
+            const history = JSON.stringify(historyarray);
+            let reference
+            if (message.reference) {
+                reference = await message.channel.messages.fetch(message.reference.messageId)
+            }
+            const response = await getresponse(message.content, history, client.user.username, message.member, reference)
+            if (response.text.length > 2000) {
+                const filePath = path.join(__dirname, 'message.txt');
+                fs.writeFileSync(filePath, response.text, 'utf8');
+
+                await message.reply({
+                    files: [filePath]
+                })
+                fs.unlinkSync(filePath);
+            } else {
+                await message.reply(response.text)
+            }
+        }
+    }
+})
+
+client.on(Events.InteractionCreate, async interaction => {
+    if (!interaction.isButton()) {
+        return
+    }
+    if (interaction.customId === "delete") {
+
+    }
+    console.log("A button was just clicked!")
+})
 client.on(Events.InteractionCreate, async interaction => {
     if (interaction.isChatInputCommand()) {
         const command = client.commands.get(interaction.commandName);
@@ -93,9 +139,23 @@ client.on(Events.InteractionCreate, async interaction => {
         }
     }
 });
-fixConfig()
-initDb()
-if (!config.ownerID) {
-    console.warn(chalk.bgYellow.black('[WARN] config.ownerID is not defined! Owner-only commands will block all users.'));
+
+let ai_ids
+async function init() {
+    const channels = await getaichannels()
+    ai_ids = channels.map(item => item.ai_channel_id)
+
+    await fixConfig();
+    await initDb();
+    const config = JSON.parse(fs.readFileSync(path.join(__dirname, "/config.json")));
+    if (!config.ownerID) {
+        console.warn(chalk.bgYellow.black('[WARN] config.ownerID is not defined! Owner-only commands will block all users.'));
+    }
+    await client.login(process.env.DISCORD_TOKEN)
 }
-client.login(process.env.DISCORD_TOKEN)
+init()
+.then(() => {
+    console.log("intialized successfully")
+}).catch(error => {
+    return console.log(chalk.red("[ERROR] A FATAL ERROR OCCURED"))
+})

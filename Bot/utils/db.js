@@ -7,6 +7,8 @@ const dbpath = path.join(__dirname, '..', 'data', 'discord.db')
 if (!fs.existsSync(dataDir)) {
         fs.mkdirSync(dataDir, { recursive: true });
 }
+
+
 const db = new sqlite3.Database(dbpath)
         async function execute(db, sql, params = []) {
                 if (params.length > 0) {
@@ -24,6 +26,8 @@ const db = new sqlite3.Database(dbpath)
                             })
                 })
         }
+
+
         async function queryone(db, sql, params = []) {
                 return new Promise((resolve, reject) => {
                         db.get(sql, params, (err, row) => {
@@ -32,6 +36,8 @@ const db = new sqlite3.Database(dbpath)
                         })
                 })
         }
+
+
         async function queryall(db, sql, params = []) {
                 return new Promise((resolve, reject) => {
                         db.all(sql, params, (err, rows) => {
@@ -40,6 +46,13 @@ const db = new sqlite3.Database(dbpath)
                         })
                 })
         }
+
+
+        async function serverindb(serverid) {
+        return !!(await queryone(db, "SELECT * FROM serverconfig WHERE server_id=?", [serverid]));
+        }
+
+
         async function initDb() {
         await execute(db, `CREATE TABLE IF NOT EXISTS users (
         user_id TEXT PRIMARY KEY,
@@ -60,9 +73,26 @@ const db = new sqlite3.Database(dbpath)
         message_id TEXT NOT NULL              
         )
         `);
+        await execute(db, `
+        CREATE TABLE IF NOT EXISTS serverconfig (
+        server_id TEXT PRIMARY KEY,        
+        ai_channel_id TEXT        
+        )
+        `);
         }
+
+
         async function exists(db, id) {
                 const exists = await queryone(db, "SELECT * FROM users WHERE user_id=?", [id])
                 return !!exists;
         }
-module.exports = { execute, queryall , queryone , initDb , exists , db }
+
+
+        async function registerserver(id) {
+        await execute(db, "INSERT INTO serverconfig(server_id) VALUES(?)", [id])
+        }
+
+        async function getaichannels() {
+        return await queryall(db, "SELECT ai_channel_id FROM serverconfig")
+        }
+module.exports = { execute, queryall, queryone, initDb, exists, registerserver, serverindb, getaichannels, db}

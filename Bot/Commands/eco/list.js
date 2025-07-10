@@ -1,4 +1,4 @@
-const { EmbedBuilder, SlashCommandBuilder, resolveColor, MessageFlags} = require('discord.js')
+const { EmbedBuilder, SlashCommandBuilder, resolveColor, MessageFlags, ActionRowBuilder, ButtonBuilder} = require('discord.js')
 const { execute, queryone, queryall, db, exists} = require('../../utils/db')
 const config = require('../../config.json')
 const { v4: uuidv4 } = require('uuid');
@@ -33,6 +33,14 @@ module.exports = {
         const price = interaction.options.getNumber("price")
         const channel = interaction.options.getChannel("channel")
         const note = interaction.options.getString("note") ?? "N/A"
+        const row = new ActionRowBuilder()
+            .addComponents(
+                new ButtonBuilder()
+                    .setCustomId("delete")
+                    .setLabel("Unlist")
+                    .setEmoji("🔨")
+                    .setStyle(4)
+            )
         const embed = new EmbedBuilder()
             .setTitle(`Account: ${name}`)
             .addFields(
@@ -44,7 +52,8 @@ module.exports = {
         try {
             const listid = uuidv4();
             await channel.send({
-                embeds: [embed.setColor(resolveColor("Blue")).setFooter({ text: `${config.footer} | ID: ${listid}`, iconURL: config.footerUrl})]
+                embeds: [embed.setColor(resolveColor("Blue")).setFooter({ text: `${config.footer} | ID: ${listid}`, iconURL: config.footerUrl})],
+                components: [row]
             }).then(message => {
                 messageId = message.id
             })
