@@ -33,7 +33,6 @@ for (const folder of CommandsFolder) {
         }
     }
 }
-
 client.once(Events.ClientReady, async () => {
     console.log(`Logged in as ${client.user.tag}`);
     if (config.status) {
@@ -92,6 +91,10 @@ client.on(Events.InteractionCreate, async interaction => {
             console.log(chalk.bgRedBright(`No interaction ${interaction.commandName} found`));
             return;
         }
+        if (command.name === "setaichannel") {
+            const channels = await getaichannels();
+            ai_ids = channels.map(item => item.ai_channel_id);
+        }
         if (interaction.user.id !== config?.ownerID) {
             const now = Date.now();
             const userId = interaction.user.id;
@@ -144,9 +147,8 @@ let ai_ids
 async function init() {
     const channels = await getaichannels()
     ai_ids = channels.map(item => item.ai_channel_id)
-
-    await fixConfig();
-    await initDb();
+    fixConfig();
+    initDb();
     const config = JSON.parse(fs.readFileSync(path.join(__dirname, "/config.json")));
     if (!config.ownerID) {
         console.warn(chalk.bgYellow.black('[WARN] config.ownerID is not defined! Owner-only commands will block all users.'));
@@ -157,5 +159,5 @@ init()
 .then(() => {
     console.log("intialized successfully")
 }).catch(error => {
-    return console.log(chalk.red("[ERROR] A FATAL ERROR OCCURED"))
+    return console.log(chalk.red(`[ERROR] A FATAL ERROR OCCURED, ${error.stack}`))
 })
