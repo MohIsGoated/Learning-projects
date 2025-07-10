@@ -63,18 +63,19 @@ client.on("messageCreate", async (message) => {
             if (message.reference) {
                 reference = await message.channel.messages.fetch(message.reference.messageId)
             }
-            let response = await getresponse(message.content, history, client.user.username, message.member, reference)
-            const text = response.text.replace(/<@!?(\d+)>|<@&!?(\d+)>|@everyone|@here/g, 'REDACTED');
-            if (text.length > 2000) {
+            const response = await getresponse(message.content, history, client.user.username, message.member, reference)
+            const responsetext = response.text
+            const fixedstring = responsetext.replace(/<@!?(\d+)>|<@&!?(\d+)>|@everyone|@here/g, 'REDACTED');
+            if (fixedstring.length > 2000) {
                 const filePath = path.join(__dirname, 'message.txt');
-                fs.writeFileSync(filePath, text, 'utf8');
+                fs.writeFileSync(filePath, fixedstring, 'utf8');
 
                 await message.reply({
                     files: [filePath]
                 })
                 fs.unlinkSync(filePath);
             } else {
-                await message.reply(text)
+                await message.reply(fixedstring)
             }
         }
     }
