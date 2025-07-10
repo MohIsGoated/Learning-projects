@@ -64,9 +64,8 @@ client.on("messageCreate", async (message) => {
                 reference = await message.channel.messages.fetch(message.reference.messageId)
             }
             let response = await getresponse(message.content, history, client.user.username, message.member, reference)
-            response.text.replace(/<@[^>]+>/g, 'REDACTED');
-            response.text.replace("@everyone", 'REDACTED')
-            response.text.replace("@here", 'REDACTED')
+            response.text.replace(/<@[^>]+>|@everyone|@here/g, 'REDACTED');
+
             console.log(response.text)
             if (response.text.length > 2000) {
                 const filePath = path.join(__dirname, 'message.txt');
