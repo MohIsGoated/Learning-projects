@@ -65,7 +65,6 @@ client.on("messageCreate", async (message) => {
             }
             let response = await getresponse(message.content, history, client.user.username, message.member, reference)
             const text = response.text.replace(/<@!?(\d+)>|<@&!?(\d+)>|@everyone|@here/g, 'REDACTED');
-            console.log(text)
             if (text.length > 2000) {
                 const filePath = path.join(__dirname, 'message.txt');
                 fs.writeFileSync(filePath, text, 'utf8');
