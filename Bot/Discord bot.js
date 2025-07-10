@@ -64,7 +64,7 @@ client.on("messageCreate", async (message) => {
                 reference = await message.channel.messages.fetch(message.reference.messageId)
             }
             let response = await getresponse(message.content, history, client.user.username, message.member, reference)
-            response.text.replace(/<@[^>]+>|@everyone|@here/g, 'REDACTED');
+            response.text.replace(/<@!?(\d+)>|<@&!?(\d+)>|@everyone|@here/g, 'REDACTED');
 
             console.log(response.text)
             if (response.text.length > 2000) {
