@@ -27,7 +27,7 @@ require("dotenv").config({path: "../../.env"})
                 history +
                 "here I am giving you the message that the user replied to, basically this is the last message you sent and the user is replying to it:\n"+
                 replycontent +
-                `Given all the above instructions, generate a response for the following message sent by ${sender}, you are allowed to use their name in your message if it makes it look better: ${message}`,
+                `Given all the above instructions, generate a response for the following message sent by ${sender}, REMEMBER THE NAME, each name is critical to match with the history and not confuse who they are, you are allowed to use their name in your message if it makes it look better: ${message}`,
         });
     }
 
