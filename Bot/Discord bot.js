@@ -9,6 +9,7 @@ const {handleaichat} = require("./utils/handleaichat");
 const {loadcommands} = require("./utils/loadcommands");
 const {handlecommands} = require("./utils/handlecommands");
 const {getAiIds} = require("./utils/setaiids");
+const {deploy} = require("./Deploy");
 const cooldowns = new Map();
 const folderpath = path.join(__dirname, 'Commands');
 const CommandsFolder = fs.readdirSync(folderpath);
@@ -25,7 +26,7 @@ let config = JSON.parse(fs.readFileSync(fpath))
 
 loadcommands(client, CommandsFolder, folderpath)
 
-
+deploy()
 
 client.on("messageCreate", async (message) => {
     if (getAiIds().includes(message.channel.id)) {
