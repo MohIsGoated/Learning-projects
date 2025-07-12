@@ -2,86 +2,39 @@ const { Client, Events, GatewayIntentBits, Collection, MessageFlags } = require(
 const fs = require('fs');
 const path = require('path');
 require('dotenv').config({ path: '../.env' });
-const { initDb, getaichannels} = require('./utils/db')
+const chalk = require("chalk");
+const { ChangeStatus } = require('./utils/ChangeStatus')
+const {init} = require("./utils/initializebot");
+const {handleaichat} = require("./utils/handleaichat");
+const {loadcommands} = require("./utils/loadcommands");
+const {handlecommands} = require("./utils/handlecommands");
+const {getAiIds} = require("./utils/setaiids");
+const cooldowns = new Map();
+const folderpath = path.join(__dirname, 'Commands');
+const CommandsFolder = fs.readdirSync(folderpath);
+const fpath = path.join(__dirname, "/config.json")
 const client = new Client({ intents: [
         GatewayIntentBits.Guilds,
         GatewayIntentBits.GuildMembers,
         GatewayIntentBits.GuildMessages,
         GatewayIntentBits.MessageContent
-]
+    ]
 });
-const chalk = require("chalk");
-const { ChangeStatus } = require('./utils/ChangeStatus')
-const { fixConfig } = require("./utils/fixconfig");
-const {getresponse} = require("./utils/getresponse");
-const cooldowns = new Map();
 client.commands = new Collection();
-const folderpath = path.join(__dirname, 'Commands');
-const CommandsFolder = fs.readdirSync(folderpath);
-const fpath = path.join(__dirname, "/config.json")
 let config = JSON.parse(fs.readFileSync(fpath))
-for (const folder of CommandsFolder) {
-    const CommandsPath = path.join(folderpath, folder);
-    const CommandFiles = fs.readdirSync(CommandsPath).filter(file => file.endsWith(`.js`));
-    for (const file of CommandFiles) {
-        const FilePath = path.join(CommandsPath, file);
-        const command = require(FilePath);
-        if ('data' in command && 'execute' in command) {
-            client.commands.set(command.data.name, command);
-        } else {
-            console.log(chalk.bgRedBright(`The command file at ${FilePath} doesn't have a required 'execute' or 'data' prop.`));
-        }
-    }
-}
-client.once(Events.ClientReady, async () => {
-    console.log(`Logged in as ${client.user.tag}`);
-    if (config.status) {
-        await ChangeStatus(client, config.status, config.appearance)
-    }
-});
 
-let ai_ids
+loadcommands(client, CommandsFolder, folderpath)
+
+
 
 client.on("messageCreate", async (message) => {
-    if (ai_ids.includes(message.channel.id)) {
-    if (message.member.user.bot) {
-        return
-    }
-        if (message.mentions.has(client.user)) {
-            await message.channel.sendTyping();
-            const historydata = await message.channel.messages.fetch({
-                limit: 25,
-                before: message.id
-            })
-            const historyarray = historydata.map(item => ({
-                author: item.author.username,
-                content: item.content
-            }))
-
-            const history = JSON.stringify(historyarray);
-            let reference
-            if (message.reference) {
-                reference = await message.channel.messages.fetch(message.reference.messageId)
-            }
-            const response = await getresponse(message.content, history, client.user.username, message.member, reference)
-            const responsetext = response.text
-            const fixedstring = responsetext.replace(/<@!?(\d+)>|<@&!?(\d+)>|@everyone|@here/g, 'REDACTED');
-            if (fixedstring.length > 2000) {
-                const filePath = path.join(__dirname, 'message.txt');
-                fs.writeFileSync(filePath, fixedstring, 'utf8');
-
-                await message.reply({
-                    files: [filePath]
-                })
-                fs.unlinkSync(filePath);
-            } else {
-                await message.reply(fixedstring)
-            }
-        }
+    if (getAiIds().includes(message.channel.id)) {
+        await handleaichat(message, client);
     }
 })
 
 client.on(Events.InteractionCreate, async interaction => {
+    // ignore this, I plan to use it to learn how buttons work at some point
     if (!interaction.isButton()) {
         return
     }
@@ -90,80 +43,23 @@ client.on(Events.InteractionCreate, async interaction => {
     }
     console.log("A button was just clicked!")
 })
-client.on(Events.InteractionCreate, async interaction => {
-    if (interaction.isChatInputCommand()) {
-        const command = client.commands.get(interaction.commandName);
-        if (!command) {
-            console.log(chalk.bgRedBright(`No interaction ${interaction.commandName} found`));
-            return;
-        }
-        console.log(interaction.commandName)
-        if (interaction.commandName === "setaichannel") {
-                const channels = await getaichannels();
-                ai_ids = channels.map(item => item.ai_channel_id);
-        }
-        if (interaction.user.id !== config?.ownerID) {
-            const now = Date.now();
-            const userId = interaction.user.id;
-            const cooldownAmount = (command.cooldown || 0) * 1000
-            if (!cooldowns.has(command.data.name)) {
-                cooldowns.set(command.data.name, new Map());
-            }
-            const timestamps = cooldowns.get(command.data.name);
-            if (timestamps.has(userId)) {
-                const expire = timestamps.get(userId);
-                const timeleft = expire - now
-                if (timeleft > 0) {
-                    return await interaction.reply({
-                        content: `⏳ You're on cooldown, Try again in **${Math.ceil(timeleft / 1000)}s**.`,
-                        flags: MessageFlags.Ephemeral
-                    });
-                }
-            }
-            timestamps.set(userId, now + cooldownAmount)
-            setTimeout(() => {
-                timestamps.delete(userId)
-            }, cooldownAmount)
-        }
-        if (command.ownerOnly && interaction.user.id !== config?.ownerID) {
-            return await interaction.reply({
-                content: `Only the owner of the bot may use this command!`,
-                flags: MessageFlags.Ephemeral
-            });
-        }
-        try {
-            await command.execute(interaction);
-        } catch (err) {
-            console.log(chalk.bgRedBright(err.stack));
-            if (interaction.replied || interaction.deferred) {
-                await interaction.followUp({
-                    content: 'There has been an error while executing your command.',
-                    flags: MessageFlags.Ephemeral
-                });
-            } else {
-                await interaction.reply({
-                    content: 'There has been an error while executing your command.',
-                    flags: MessageFlags.Ephemeral
-                });
-            }
-        }
+
+client.once(Events.ClientReady, async () => {
+    console.log(`Logged in as ${client.user.tag}`);
+    if (config.status) {
+        await ChangeStatus(client, config.status, config.appearance)
     }
 });
 
-async function init() {
-    const channels = await getaichannels()
-    ai_ids = channels.map(item => item.ai_channel_id)
-    fixConfig();
-    initDb();
-    const config = JSON.parse(fs.readFileSync(path.join(__dirname, "/config.json")));
-    if (!config.ownerID) {
-        console.warn(chalk.bgYellow.black('[WARN] config.ownerID is not defined! Owner-only commands will block all users.'));
+client.on(Events.InteractionCreate, async interaction => {
+    if (interaction.isChatInputCommand()) {
+        await handlecommands(client, interaction, config, cooldowns)
     }
-    await client.login(process.env.DISCORD_TOKEN)
-}
-init()
-.then(() => {
-    console.log("intialized successfully")
-}).catch(error => {
-    return console.log(chalk.red(`[ERROR] A FATAL ERROR OCCURED, ${error.stack}`))
-})
+});
+
+     init(client, "./config.json")
+        .then(() => {
+            console.log("intialized successfully")
+        }).catch(error => {
+        return console.error(chalk.red(`[ERROR] A FATAL ERROR OCCURED, ${error.stack}`))
+    })
