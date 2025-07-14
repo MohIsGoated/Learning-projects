@@ -36,11 +36,9 @@ client.on("messageCreate", async (message) => {
 
 client.on(Events.InteractionCreate, async interaction => {
     // ignore this, I plan to use it to learn how buttons work at some point
-    if (!interaction.isButton()) {
-        return
-    }
+    if (!interaction.isButton()) return;
     if (interaction.customId === "delete") {
-
+    console.log(`the button was ${interaction.customId}`)
     }
     console.log("A button was just clicked!")
 })

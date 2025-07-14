@@ -1,7 +1,7 @@
 const chalk = require("chalk");
 const {MessageFlags} = require("discord.js");
 module.exports = {
-    async handleerror(interaction) {
+    async handleerror(interaction, err) {
         console.log(chalk.bgRedBright(err.stack));
         if (interaction.replied || interaction.deferred) {
             await interaction.followUp({

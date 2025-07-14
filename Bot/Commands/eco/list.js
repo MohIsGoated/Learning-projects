@@ -1,4 +1,4 @@
-const { EmbedBuilder, SlashCommandBuilder, resolveColor, MessageFlags, ActionRowBuilder, ButtonBuilder} = require('discord.js')
+const { EmbedBuilder, SlashCommandBuilder, resolveColor, MessageFlags, ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageComponentType} = require('discord.js')
 const { execute, queryone, queryall, db, exists} = require('../../utils/db')
 const config = require('../../config.json')
 const { v4: uuidv4 } = require('uuid');
@@ -40,7 +40,12 @@ module.exports = {
                     .setCustomId("delete")
                     .setLabel("Unlist")
                     .setEmoji("🔨")
-                    .setStyle(4)
+                    .setStyle(ButtonStyle.Danger),
+                new ButtonBuilder()
+                    .setLabel("TOS")
+                    .setStyle(ButtonStyle.Link)
+                    .setEmoji("ℹ️")
+                    .setURL("https://example.com/tos")
             )
         const embed = new EmbedBuilder()
             .setTitle(`Account: ${name}`)
